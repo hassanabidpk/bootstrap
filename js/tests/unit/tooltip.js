@@ -30,7 +30,7 @@ $(function () {
   })
 
   test('should expose default settings', function () {
-    ok($.fn.bootstrapTooltip.Constructor.DEFAULTS, 'defaults is defined')
+    ok($.fn.bootstrapTooltip.Constructor.Defaults, 'defaults is defined')
   })
 
   test('should empty title attribute', function () {
@@ -910,16 +910,16 @@ $(function () {
       .bootstrapTooltip({ delay: { show: 0, hide: 150 }})
 
     setTimeout(function () {
-      ok($tooltip.data('bs.tooltip').$tip.is('.fade.in'), '1ms: tooltip faded in')
+      ok($($tooltip.data('bs.tooltip')._tip).is('.fade.in'), '1ms: tooltip faded in')
 
       $tooltip.trigger('mouseout')
 
       setTimeout(function () {
-        ok($tooltip.data('bs.tooltip').$tip.is('.fade.in'), '100ms: tooltip still faded in')
+        ok($($tooltip.data('bs.tooltip')._tip).is('.fade.in'), '100ms: tooltip still faded in')
       }, 100)
 
       setTimeout(function () {
-        ok(!$tooltip.data('bs.tooltip').$tip.is('.in'), '200ms: tooltip removed')
+        ok(!$($tooltip.data('bs.tooltip')._tip).is('.in'), '200ms: tooltip removed')
         start()
       }, 200)
 
@@ -1009,7 +1009,7 @@ $(function () {
 
   test('should not reload the tooltip on subsequent mouseenter events', function () {
     var titleHtml = function () {
-      var uid = $.fn.bootstrapTooltip.Constructor.prototype.getUID('tooltip')
+      var uid = $['bootstrap'].getUID('tooltip')
       return '<p id="tt-content">' + uid + '</p><p>' + uid + '</p><p>' + uid + '</p>'
     }
 
@@ -1021,7 +1021,7 @@ $(function () {
       animation: false,
       trigger: 'hover',
       delay: { show: 0, hide: 500 },
-      container: $tooltip,
+      container: '#tt-outer',
       title: titleHtml
     })
 
@@ -1035,7 +1035,7 @@ $(function () {
 
   test('should not reload the tooltip if the mouse leaves and re-enters before hiding', function () {
     var titleHtml = function () {
-      var uid = $.fn.bootstrapTooltip.Constructor.prototype.getUID('tooltip')
+      var uid = $['bootstrap'].getUID('tooltip')
       return '<p id="tt-content">' + uid + '</p><p>' + uid + '</p><p>' + uid + '</p>'
     }
 
@@ -1047,7 +1047,7 @@ $(function () {
       animation: false,
       trigger: 'hover',
       delay: { show: 0, hide: 500 },
-      container: $tooltip,
+      container: '#tt-outer',
       title: titleHtml
     })
 
@@ -1060,10 +1060,10 @@ $(function () {
     $('#tt-outer').trigger('mouseleave')
     equal(currentUid, $('#tt-content').text())
 
-    ok(obj.hoverState == 'out', 'the tooltip hoverState should be set to "out"')
+    ok(obj._hoverState == 'out', 'the tooltip hoverState should be set to "out"')
 
     $('#tt-content').trigger('mouseenter')
-    ok(obj.hoverState == 'in', 'the tooltip hoverState should be set to "in"')
+    ok(obj._hoverState == 'in', 'the tooltip hoverState should be set to "in"')
 
     equal(currentUid, $('#tt-content').text())
   })
@@ -1082,7 +1082,7 @@ $(function () {
     $('<a href="#" title="tooltip title" style="position: absolute; bottom: 0; right: 0;">Foobar</a>')
       .appendTo('body')
       .on('shown.bs.tooltip', function () {
-        var arrowStyles = $(this).data('bs.tooltip').$tip.find('.tooltip-arrow').attr('style')
+        var arrowStyles = $($(this).data('bs.tooltip')._tip).find('.tooltip-arrow').attr('style')
         ok(/left/i.test(arrowStyles) && !/top/i.test(arrowStyles), 'arrow positioned correctly')
         $(this).bootstrapTooltip('hide')
       })
